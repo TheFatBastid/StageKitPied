@@ -320,7 +320,7 @@ bool USB_360StageKit::SetStatusLEDs( const uint8_t status_value ) {
 // left_weight = led_numbers
 // right_weight = colour or item
 bool USB_360StageKit::SetLights( const uint8_t left_weight, const uint8_t right_weight ) {
-  struct libusb_device_descriptor descriptor;
+  struct libusb_device_descriptor device_descriptor;
   int retVal = 0;
   int dataBuffer = 0;
 
@@ -364,7 +364,7 @@ bool USB_360StageKit::SetLights( const uint8_t left_weight, const uint8_t right_
 };
 
 bool USB_360StageKit::SetStrobe( const uint8_t speed ) {
-  struct libusb_device_descriptor descriptor;
+  struct libusb_device_descriptor device_descriptor;
   int retVal = 0;
   int dataBuffer = 0;
 
@@ -442,7 +442,7 @@ bool USB_360StageKit::SetStrobe( const uint8_t speed ) {
 };
 
 bool USB_360StageKit::SetFog( const bool on ) {
-  struct libusb_device_descriptor descriptor;
+  struct libusb_device_descriptor device_descriptor;
   int retVal = 0;
   int dataBuffer = 0;
 
