@@ -289,9 +289,17 @@ bool USB_360StageKit::ReleaseInterfaces() {
 };
 
 bool USB_360StageKit::SetStatusLEDs( const uint8_t status_value ) {
+  struct libusb_device_descriptor device_descriptor;
   int retVal = 0;
   if( m_ptr_usb_device_handle != NULL ) {
+    libusb_device *dev = libusb_get_device(m_ptr_usb_device_handle);
+    libusb_get_device_descriptor(dev, &device_descriptor);
     MSG_USB360SK_DEBUG( "USB building out report: Setting status LEDs to '" << +status_value << "'" );
+	if (device_descriptor.idVendor == SANTROLLER_VID && device_descriptor.idProduct == SANTROLLER_PID && device_descriptor.bcdDevice == SANTROLLER_STAGEKIT ){
+		m_report_out[ 0 ] = 0x01;
+      m_report_out[ 1 ] = 0x5A;
+      m_report_out[ 2 ] = status_value; // big weight
+	}else{
     m_report_out[ 0 ] = 0x01;
     m_report_out[ 1 ] = 0x03;
     m_report_out[ 2 ] = status_value;
@@ -309,7 +317,7 @@ bool USB_360StageKit::SetStatusLEDs( const uint8_t status_value ) {
                                       m_report_out,                                                            // pointer to data buffer
                                       3,                                                                       // data buffer size
                                       USB_REQUEST_TIMEOUT );
-
+	}
   };
 
   return ( retVal < 0 ) ? false : true;
