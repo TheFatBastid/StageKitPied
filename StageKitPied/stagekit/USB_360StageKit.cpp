@@ -325,7 +325,7 @@ bool USB_360StageKit::SetLights( const uint8_t left_weight, const uint8_t right_
 
   if( m_ptr_usb_device_handle != NULL ) {
     libusb_device *dev = libusb_get_device(m_ptr_usb_device_handle);
-    r = libusb_get_device_descriptor(dev, &descriptor);
+    libusb_get_device_descriptor(dev, &descriptor);
 
     MSG_USB360SK_DEBUG( "USB building out report: Set lights." );
     if (device_descriptor.idVendor == SANTROLLER_VID && device_descriptor.idProduct == SANTROLLER_PID && device_descriptor.bcdDevice == SANTROLLER_STAGEKIT ){
