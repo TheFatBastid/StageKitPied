@@ -13,6 +13,11 @@
 #define STAGEKIT_VID 0x0E6F
 #define STAGEKIT_PID 0x0103
 
+#deifne SANTROLLER_VID 0x1209
+#define SANTROLLER_PID 0x2882
+#define SANTROLLER_STAGEKIT 0x0900
+
+
 #include <iostream>
 #include <iomanip>
 #include "libusb.h"

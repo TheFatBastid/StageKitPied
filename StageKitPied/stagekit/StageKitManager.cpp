@@ -58,7 +58,7 @@ uint8_t StageKitManager::Init() {
                                                              << device_descriptor.idVendor
                                                              << " : 0x" << std::setfill( '0' ) << std::setw( 4 ) << std::hex
                                                              << device_descriptor.idProduct );
-      if( device_descriptor.idVendor == STAGEKIT_VID && device_descriptor.idProduct == STAGEKIT_PID ) {
+      if( device_descriptor.idVendor == STAGEKIT_VID && device_descriptor.idProduct == STAGEKIT_PID || (device_descriptor.idVendor == SANTROLLER_VID && device_descriptor.idProduct == SANTROLLER_PID && device_descriptor.bcdDevice == SANTROLLER_STAGEKIT ) ) {
         // Is Stage Kit
         libusb_device_handle* ptr_usb_device_handle;
         if( libusb_open( device, &ptr_usb_device_handle ) == 0 ) {

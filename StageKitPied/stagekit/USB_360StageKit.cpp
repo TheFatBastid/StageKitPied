@@ -301,7 +301,7 @@ bool USB_360StageKit::SetStatusLEDs( const uint8_t status_value ) {
     m_report_out[ 6 ] = 0x00;
     m_report_out[ 7 ] = 0x00;
 
-    retVal = libusb_control_transfer( m_ptr_usb_device_handle, 
+    retVal = libusb_control_transfer( m_ptr_usb_device_handle,
                                       LIBUSB_ENDPOINT_OUT|LIBUSB_REQUEST_TYPE_CLASS|LIBUSB_RECIPIENT_INTERFACE, // request_type
                                       HID_SET_REPORT,                                                          // request
                                       ( HID_REPORT_TYPE_OUTPUT << 8 ) | 0x00,                                  // value
@@ -321,26 +321,42 @@ bool USB_360StageKit::SetStatusLEDs( const uint8_t status_value ) {
 // right_weight = colour or item
 bool USB_360StageKit::SetLights( const uint8_t left_weight, const uint8_t right_weight ) {
   int retVal = 0;
+  int dataBuffer = 0;
+
   if( m_ptr_usb_device_handle != NULL ) {
+    libusb_device *dev = libusb_get_device(m_ptr_usb_device_handle);
+    r = libusb_get_device_descriptor(dev, &descriptor);
+
     MSG_USB360SK_DEBUG( "USB building out report: Set lights." );
-    m_report_out[ 0 ] = 0x00;
-    m_report_out[ 1 ] = 0x08;
-    m_report_out[ 2 ] = 0x00;
-    m_report_out[ 3 ] = left_weight; // big weight
-    m_report_out[ 4 ] = right_weight; // small weight
-    m_report_out[ 5 ] = 0x00;
-    m_report_out[ 6 ] = 0x00;
-    m_report_out[ 7 ] = 0x00;
+    if (device_descriptor.idVendor == SANTROLLER_VID && device_descriptor.idProduct == SANTROLLER_PID && device_descriptor.bcdDevice == SANTROLLER_STAGEKIT ){
+      m_report_out[ 0 ] = 0x01;
 
-    retVal = libusb_control_transfer( m_ptr_usb_device_handle, 
-                                      LIBUSB_ENDPOINT_OUT|LIBUSB_REQUEST_TYPE_CLASS|LIBUSB_RECIPIENT_INTERFACE, // request_type
-                                      HID_SET_REPORT,                                                          // request
-                                      ( HID_REPORT_TYPE_OUTPUT << 8 ) | 0x00,                                  // value
-                                      0,                                                                       // index
-                                      m_report_out,                                                            // pointer to data buffer
-                                      8,                                                                       // data buffer size
-                                      USB_REQUEST_TIMEOUT );
+      m_report_out[ 1 ] = 0x5A;
+      m_report_out[ 2 ] = left_weight; // big weight
+      m_report_out[ 3 ] = right_weight; // small weight
 
+      dataBuffer = 4;
+    }else{
+      m_report_out[ 0 ] = 0x00;
+      m_report_out[ 1 ] = 0x08;
+      m_report_out[ 2 ] = 0x00;
+      m_report_out[ 3 ] = left_weight; // big weight
+      m_report_out[ 4 ] = right_weight; // small weight
+      m_report_out[ 5 ] = 0x00;
+      m_report_out[ 6 ] = 0x00;
+      m_report_out[ 7 ] = 0x00;
+
+      dataBuffer = 8;
+    }
+
+    retVal = libusb_control_transfer( m_ptr_usb_device_handle,
+                                           LIBUSB_ENDPOINT_OUT|LIBUSB_REQUEST_TYPE_CLASS|LIBUSB_RECIPIENT_INTERFACE, // request_type
+                                           HID_SET_REPORT,                                                          // request
+                                           ( HID_REPORT_TYPE_OUTPUT << 8 ) | 0x00,                                  // value
+                                           0,                                                                       // index
+                                           m_report_out,                                                            // pointer to data buffer
+                                           dataBuffer,                                                                       // data buffer size
+                                           USB_REQUEST_TIMEOUT );
   };
 
   return ( retVal < 0 ) ? false : true;
@@ -348,13 +364,43 @@ bool USB_360StageKit::SetLights( const uint8_t left_weight, const uint8_t right_
 
 bool USB_360StageKit::SetStrobe( const uint8_t speed ) {
   int retVal = 0;
+  int dataBuffer = 0;
+
   if( m_ptr_usb_device_handle != NULL ) {
+    libusb_device *dev = libusb_get_device(m_ptr_usb_device_handle);
+    r = libusb_get_device_descriptor(dev, &descriptor);
     MSG_USB360SK_DEBUG( "USB building out report: SetStrobe ( " << +speed << " )" );
-    m_report_out[ 0 ] = 0x00;
-    m_report_out[ 1 ] = 0x08;
-    m_report_out[ 2 ] = 0x00;
-    m_report_out[ 3 ] = 0x00; // large weight
-    switch( speed ) {
+
+    if (device_descriptor.idVendor == SANTROLLER_VID && device_descriptor.idProduct == SANTROLLER_PID && device_descriptor.bcdDevice == SANTROLLER_STAGEKIT ){
+      m_report_out[ 0 ] = 0x01;
+
+      m_report_out[ 1 ] = 0x5A;
+      m_report_out[ 2 ] = 0x00; // big weight
+      switch( speed ) {
+      case 1:
+        m_report_out[ 3 ] = SKRUMBLEDATA::SK_STROBE_SPEED_1;
+        break;
+      case 2:
+        m_report_out[ 3 ] = SKRUMBLEDATA::SK_STROBE_SPEED_2;
+        break;
+      case 3:
+        m_report_out[ 3 ] = SKRUMBLEDATA::SK_STROBE_SPEED_3;
+        break;
+      case 4:
+        m_report_out[ 3 ] = SKRUMBLEDATA::SK_STROBE_SPEED_4;
+        break;
+      default:
+        m_report_out[ 3 ] = SKRUMBLEDATA::SK_STROBE_OFF;
+        break;
+      }
+
+      dataBuffer = 4;
+    }else{
+      m_report_out[ 0 ] = 0x00;
+      m_report_out[ 1 ] = 0x08;
+      m_report_out[ 2 ] = 0x00;
+      m_report_out[ 3 ] = 0x00; // large weight
+      switch( speed ) {
       case 1:
         m_report_out[ 4 ] = SKRUMBLEDATA::SK_STROBE_SPEED_1;
         break;
@@ -370,10 +416,14 @@ bool USB_360StageKit::SetStrobe( const uint8_t speed ) {
       default:
         m_report_out[ 4 ] = SKRUMBLEDATA::SK_STROBE_OFF;
         break;
+      }
+      m_report_out[ 5 ] = 0x00;
+      m_report_out[ 6 ] = 0x00;
+      m_report_out[ 7 ] = 0x00;
+
+      dataBuffer = 8;
     }
-    m_report_out[ 5 ] = 0x00;
-    m_report_out[ 6 ] = 0x00;
-    m_report_out[ 7 ] = 0x00;
+
 
     retVal = libusb_control_transfer( m_ptr_usb_device_handle, 
                                       LIBUSB_ENDPOINT_OUT|LIBUSB_REQUEST_TYPE_CLASS|LIBUSB_RECIPIENT_INTERFACE, // request_type
@@ -381,7 +431,7 @@ bool USB_360StageKit::SetStrobe( const uint8_t speed ) {
                                       ( HID_REPORT_TYPE_OUTPUT << 8 ) | 0x00,                                  // value
                                       0,                                                                       // index
                                       m_report_out,                                                            // pointer to data buffer
-                                      8,                                                                       // data buffer size
+                                      dataBuffer,                                                                       // data buffer size
                                       USB_REQUEST_TIMEOUT );
 
   };
@@ -391,8 +441,26 @@ bool USB_360StageKit::SetStrobe( const uint8_t speed ) {
 
 bool USB_360StageKit::SetFog( const bool on ) {
   int retVal = 0;
+  int dataBuffer = 0;
+
   if( m_ptr_usb_device_handle != NULL ) {
+    libusb_device *dev = libusb_get_device(m_ptr_usb_device_handle);
+    r = libusb_get_device_descriptor(dev, &descriptor);
     MSG_USB360SK_DEBUG( "USB building out report: SetFog " << (on? "on" : "off") );
+    if (device_descriptor.idVendor == SANTROLLER_VID && device_descriptor.idProduct == SANTROLLER_PID && device_descriptor.bcdDevice == SANTROLLER_STAGEKIT ){
+      m_report_out[ 0 ] = 0x01;
+
+      m_report_out[ 1 ] = 0x5A;
+      m_report_out[ 2 ] = 0x00; // big weight
+      if( on ) {
+        m_report_out[ 3 ] = SKRUMBLEDATA::SK_FOG_ON;
+      } else {
+        m_report_out[ 3 ] = SKRUMBLEDATA::SK_FOG_OFF;
+      }
+
+      dataBuffer = 4;
+    }else{
+
     m_report_out[ 0 ] = 0x00;
     m_report_out[ 1 ] = 0x08;
     m_report_out[ 2 ] = 0x00;
@@ -406,13 +474,16 @@ bool USB_360StageKit::SetFog( const bool on ) {
     m_report_out[ 6 ] = 0x00;
     m_report_out[ 7 ] = 0x00;
 
-    retVal = libusb_control_transfer( m_ptr_usb_device_handle, 
+    dataBuffer = 8;
+    }
+
+    retVal = libusb_control_transfer( m_ptr_usb_device_handle,
                                       LIBUSB_ENDPOINT_OUT|LIBUSB_REQUEST_TYPE_CLASS|LIBUSB_RECIPIENT_INTERFACE, // request_type
                                       HID_SET_REPORT,                                                           // request
                                       ( HID_REPORT_TYPE_OUTPUT << 8 ) | 0x00,                                   // value
                                       0,                                                                        // index
                                       m_report_out,                                                             // pointer to data buffer
-                                      8,                                                                        // data buffer size
+                                      dataBuffer,                                                                        // data buffer size
                                       USB_REQUEST_TIMEOUT );
 
   };
