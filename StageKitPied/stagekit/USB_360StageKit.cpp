@@ -368,7 +368,7 @@ bool USB_360StageKit::SetStrobe( const uint8_t speed ) {
 
   if( m_ptr_usb_device_handle != NULL ) {
     libusb_device *dev = libusb_get_device(m_ptr_usb_device_handle);
-    r = libusb_get_device_descriptor(dev, &descriptor);
+    libusb_get_device_descriptor(dev, &descriptor);
     MSG_USB360SK_DEBUG( "USB building out report: SetStrobe ( " << +speed << " )" );
 
     if (device_descriptor.idVendor == SANTROLLER_VID && device_descriptor.idProduct == SANTROLLER_PID && device_descriptor.bcdDevice == SANTROLLER_STAGEKIT ){
@@ -445,7 +445,7 @@ bool USB_360StageKit::SetFog( const bool on ) {
 
   if( m_ptr_usb_device_handle != NULL ) {
     libusb_device *dev = libusb_get_device(m_ptr_usb_device_handle);
-    r = libusb_get_device_descriptor(dev, &descriptor);
+    libusb_get_device_descriptor(dev, &descriptor);
     MSG_USB360SK_DEBUG( "USB building out report: SetFog " << (on? "on" : "off") );
     if (device_descriptor.idVendor == SANTROLLER_VID && device_descriptor.idProduct == SANTROLLER_PID && device_descriptor.bcdDevice == SANTROLLER_STAGEKIT ){
       m_report_out[ 0 ] = 0x01;
