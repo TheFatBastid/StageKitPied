@@ -37,6 +37,10 @@
 #define USB_REQUEST_TIMEOUT 1000
 #define USB_WRITE_RETRIES 3
 
+#define SANTROLLER_VID 0x1209
+#define SANTROLLER_PID 0x2882
+#define SANTROLLER_STAGEKIT 0x0900
+
 class USB_360StageKit {
 public:
   USB_360StageKit();
