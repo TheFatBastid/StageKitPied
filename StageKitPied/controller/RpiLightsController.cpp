@@ -571,7 +571,7 @@ void RpiLightsController::Handle_RumbleData( uint8_t left_weight, uint8_t right_
       break;
     case SKRUMBLEDATA::SK_LED_BLUE:
       MSG_RPLC_DEBUG( "BLUE LED" );
-      this->Handle_LEDUpdate( left_weight, SKRUMBLEDATA::SK_LED_BLUE, );
+      this->Handle_LEDUpdate( left_weight, SKRUMBLEDATA::SK_LED_BLUE );
       break;
     case SKRUMBLEDATA::SK_LED_YELLOW:
       MSG_RPLC_DEBUG( "YELLLOW LED" );
