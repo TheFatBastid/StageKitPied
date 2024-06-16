@@ -628,7 +628,7 @@ void RpiLightsController::Handle_RumbleData( uint8_t left_weight, uint8_t right_
 };
 
 // Colour = SK colour - From serial
-void RpiLightsController::Handle_LEDUpdate( const uint8_t colour, const uint8_t leds ) {
+void RpiLightsController::Handle_LEDUpdate( const uint8_t leds, const uint8_t colour ) {
 
   switch( colour ) {
     case SKRUMBLEDATA::SK_ALL_OFF:
@@ -648,7 +648,7 @@ void RpiLightsController::Handle_LEDUpdate( const uint8_t colour, const uint8_t 
       break;
   }
 
-  mLEDS.SetLights( colour, leds );
+  mLEDS.SetLights( leds, colour );
 
   mStageKitManager.SetLights( leds, colour );
 };
