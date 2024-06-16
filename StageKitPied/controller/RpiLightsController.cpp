@@ -510,7 +510,7 @@ void RpiLightsController::Handle_StagekitDisconnect() {
   this->Handle_FogUpdate( false );
 
   // Turn off all LEDs
-  this->Handle_LEDUpdate( SKRUMBLEDATA::SK_ALL_OFF, SKRUMBLEDATA::SK_ALL_OFF );
+  this->Handle_LEDUpdate( SKRUMBLEDATA::SK_NONE, SKRUMBLEDATA::SK_ALL_OFF );
 
   // Disconnect from any actual USB Stage Kits
   mStageKitManager.End();
@@ -608,7 +608,7 @@ void RpiLightsController::Handle_RumbleData( uint8_t left_weight, uint8_t right_
     case SKRUMBLEDATA::SK_ALL_OFF:
       // I suspect all off includes fog & strobe.
       MSG_RPLC_DEBUG( "ALL OFF - LEDS & STROBE - " );
-      this->Handle_LEDUpdate( SKRUMBLEDATA::SK_ALL_OFF, SKRUMBLEDATA::SK_ALL_OFF );
+      this->Handle_LEDUpdate( SKRUMBLEDATA::SK_NONE, SKRUMBLEDATA::SK_ALL_OFF );
       this->Handle_StrobeUpdate( 0 );
       this->Handle_FogUpdate( false );
       break;
