@@ -563,19 +563,19 @@ void RpiLightsController::Handle_RumbleData( uint8_t left_weight, uint8_t right_
   switch( right_weight ) {
     case SKRUMBLEDATA::SK_LED_RED:
       MSG_RPLC_DEBUG( "RED LED" );
-      this->Handle_LEDUpdate( SKRUMBLEDATA::SK_LED_RED, left_weight );
+      this->Handle_LEDUpdate( left_weight, SKRUMBLEDATA::SK_LED_RED );
       break;
    case SKRUMBLEDATA::SK_LED_GREEN:
       MSG_RPLC_DEBUG( "GREEN LED" );
-      this->Handle_LEDUpdate( SKRUMBLEDATA::SK_LED_GREEN, left_weight );
+      this->Handle_LEDUpdate( left_weight, SKRUMBLEDATA::SK_LED_GREEN );
       break;
     case SKRUMBLEDATA::SK_LED_BLUE:
       MSG_RPLC_DEBUG( "BLUE LED" );
-      this->Handle_LEDUpdate( SKRUMBLEDATA::SK_LED_BLUE, left_weight );
+      this->Handle_LEDUpdate( left_weight, SKRUMBLEDATA::SK_LED_BLUE, );
       break;
     case SKRUMBLEDATA::SK_LED_YELLOW:
       MSG_RPLC_DEBUG( "YELLLOW LED" );
-      this->Handle_LEDUpdate( SKRUMBLEDATA::SK_LED_YELLOW, left_weight );
+      this->Handle_LEDUpdate( left_weight, SKRUMBLEDATA::SK_LED_YELLOW );
       break;
     case SKRUMBLEDATA::SK_FOG_ON:
       MSG_RPLC_DEBUG( "FOG ON" );
